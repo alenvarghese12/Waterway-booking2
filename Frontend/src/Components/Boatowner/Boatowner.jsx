@@ -25,7 +25,7 @@ const Boatowner = () => {
 
       try {
         console.log("Fetching session data with token:", token);
-        const response = await fetch('http://localhost:8080/api/auth/sessionn', {
+        const response = await fetch('https://waterway-booking2.onrender.com/api/auth/sessionn', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, // Attach the token in the Authorization header
