@@ -28,7 +28,7 @@ const Admin = () => {
   return (
     <div className="admin-dashboard">
       <div className="top-bar">
-        <FaBars className="menu-icon" onClick={toggleSidebar} />
+        <FaBars className="menu-icon" id="sidebar" onClick={toggleSidebar} />
         <h1>Admin</h1>
         {/* <div className="lg"><Logoutb /></div> */}
       </div>

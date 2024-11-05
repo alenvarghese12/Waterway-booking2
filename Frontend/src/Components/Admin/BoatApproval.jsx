@@ -70,7 +70,7 @@ const BoatApproval = () => {
               >
                 View License Document
               </a><br></br><br></br>
-              <button className="approve-btn" onClick={() => handleApprove(boat._id)}>Approve</button>
+              <button className="approve-btn" id="submit" onClick={() => handleApprove(boat._id)}>Approve</button>
               {/* <button className="disapprove-btn" onClick={() => handleDisapprove(boat._id)}>Disapprove</button> */}
             </div>
           ))

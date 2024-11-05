@@ -107,12 +107,13 @@ const Addboat = () => {
       <form onSubmit={handleAddOrEditBoat}>
         <input
           type="text"
+          id="type"
           placeholder="Boat Type"
           value={boatType}
           onChange={(e) => setBoatType(e.target.value)}
           required
         />
-        <button type="submit">{isEditing ? 'Update Boat Type' : 'Add Boat Type'}</button>
+        <button type="submit" id="submit">{isEditing ? 'Update Boat Type' : 'Add Boat Type'}</button>
       </form>
 
       <h3>Existing Boat Types</h3>

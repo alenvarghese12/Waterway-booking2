@@ -141,7 +141,7 @@ const Viewusers = () => {
               {/* <TableData>{user.status}</TableData> */}
               <TableData>
                 {/* <Button onClick={() => handleEditClick(user._id)}>Edit</Button> */}
-                <Button delete onClick={() => handleDelete(user._id)}>Delete</Button>
+                <Button delete onClick={() => handleDelete(user._id)} id="submit">Delete</Button>
               </TableData>
             </tr>
           ))}
