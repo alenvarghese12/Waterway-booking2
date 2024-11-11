@@ -9,10 +9,12 @@ const Logoutb = () => {
   const handleLogout = async () => {
     try {
      
-      const response = await axios.post('https://waterway-booking2.onrender.com/api/auth/logoutp');
+      const response = await axios.post('http://localhost:8080/api/auth/logoutp');
       if (response.data.message === 'Logged out successfully') {
         localStorage.removeItem('token');
         localStorage.removeItem('email');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userId');
         // session.removeItem('user'); // Remove user session data from localStorage
         // window.location.href = '/login'; // Redirect to the login page after logout
         navigate('/login'); 
@@ -23,7 +25,7 @@ const Logoutb = () => {
   };
   
   return (
-    <button id='logout' className="logout-button" onClick={handleLogout}>Logout</button>
+    <button className="logout-button" onClick={handleLogout}>Logout</button>
   );
 };
 

@@ -75,5 +75,19 @@ router.post('/bookingss', async (req, res) => {
     res.status(500).json({ error: 'Failed to create booking and send confirmation email.' });
   }
 });
+router.get('/user/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+      const bookings = await Booking.find({ userId }); // Fetch bookings for the user
+      if (bookings) {
+          res.status(200).json(bookings);
+      } else {
+          res.status(404).json({ message: 'No bookings found for this user' });
+      }
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching bookings', error });
+  }
+});
+
 
 module.exports = router;

@@ -87,7 +87,7 @@ const BoatRegistration = () => {
   useEffect(() => {
     const fetchBoatTypes = async () => {
       try {
-        const response = await axios.get('https://waterway-booking2.onrender.com/api/boats/types');
+        const response = await axios.get('http://localhost:8080/api/boats/types');
         setBoatTypes(response.data.filter(type => type.trim() !== '' && type.length > 2));
       } catch (error) {
         console.error('Failed to fetch boat types', error);
@@ -104,7 +104,7 @@ const BoatRegistration = () => {
       }
 
       try {
-        const response = await axios.get('https://waterway-booking2.onrender.com/api/auth/sessionn', {
+        const response = await axios.get('http://localhost:8080/api/auth/sessionn', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -280,7 +280,7 @@ const BoatRegistration = () => {
   
     try {
       // Step 1: Check if the boat name is already taken
-      const nameCheckResponse = await axios.post('https://waterway-booking2.onrender.com/api/boats/checkName', 
+      const nameCheckResponse = await axios.post('http://localhost:8080/api/boats/checkName', 
       { boatName: formData.boatName }, 
       {
         headers: {
@@ -302,7 +302,7 @@ const BoatRegistration = () => {
       }
   
       // Step 3: Proceed with the form submission if the boat name is unique
-      const registerResponse = await axios.post('https://waterway-booking2.onrender.com/api/boats/register', data, {
+      const registerResponse = await axios.post('http://localhost:8080/api/boats/register', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`,

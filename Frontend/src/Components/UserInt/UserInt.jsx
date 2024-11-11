@@ -43,7 +43,7 @@
 
 //       try {
 //         console.log("Fetching session data with token:", token);
-//         const response = await fetch('https://waterway-booking2.onrender.com/api/auth/sessionn', {
+//         const response = await fetch('http://localhost:8080/api/auth/sessionn', {
 //           method: 'GET',
 //           headers: {
 //             'Authorization': `Bearer ${token}`,
@@ -150,15 +150,22 @@ const UserInt = () => {
   useEffect(() => {
     const fetchSessionData = async () => {
       const token = localStorage.getItem('token');
+      const userRole = localStorage.getItem('role'); // Retrieve the user role from local storage
 
       if (!token) {
         navigate('/login');
         return;
       }
 
+      // Check if the user role is admin or boatowner
+      if (userRole === 'Admin' || userRole === 'BoatOwner') {
+        navigate('/login'); // Redirect to login if the role is not allowed
+        return;
+      }
+
       try {
         console.log("Fetching session data with token:", token);
-        const response = await fetch('https://waterway-booking2.onrender.com/api/auth/sessionn', {
+        const response = await fetch('http://localhost:8080/api/auth/sessionn', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -190,6 +197,21 @@ const UserInt = () => {
     fetchSessionData();
   }, [navigate]);
 
+  useEffect(() => {
+    // Push a new entry to the history stack to prevent going back to the login page
+    window.history.pushState(null, null, window.location.href);
+
+    const handlePopState = (event) => {
+      // Redirect to the current page if trying to go back
+      navigate('/userint'); // Redirect to the current page or another appropriate page
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -198,6 +220,15 @@ const UserInt = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+    // Clear token and role from local storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('email');
+    navigate('/login'); // Redirect to login page on logout
   };
 
   if (loading) {
@@ -211,7 +242,7 @@ const UserInt = () => {
   return (
     <div className="user-navbar">
       <div className="top-navbar">
-        <button id='sidebar' className="sidebar-toggle" onClick={toggleSidebar}>
+        <button className="sidebar-toggle" onClick={toggleSidebar}>
           ☰
         </button>
         <h1 className="navbar-title">Waterway</h1>
@@ -233,6 +264,13 @@ const UserInt = () => {
   className="nav-link"
 >
   Boats
+</Link>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<Link 
+  to="bookingd" 
+  state={{ userDetails: { id: userDetails?.id, name: userDetails?.name, email: userDetails?.email } }} 
+  className="nav-link"
+>
+  View Bookings
 </Link>
         </div>
 
@@ -245,11 +283,10 @@ const UserInt = () => {
       </div>
 
       <div className={`side-navbar ${isSidebarOpen ? 'open' : ''}`}>
-        <Logoutb />
+        <Logoutb onClick={handleLogout} /> {/* Pass the logout handler to the Logoutb component */}
       </div>
 
       <Outlet context={{ userDetails: { id: userDetails?.id, name: userDetails?.name, email: userDetails?.email } }} />
-
     </div>
   );
 };
