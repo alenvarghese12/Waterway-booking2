@@ -82,7 +82,7 @@ const BoatViewDetails = () => {
     const fetchUnavailableDates = async () => {
       try {
         if (boat && boat._id) { // Ensure boat._id is available
-          const response = await fetch(`http://localhost:8080/api/boats/${boat._id}/unavailable-dates`); // Use boat._id instead of boatId
+          const response = await fetch(`https://waterway-booking2-1.onrender.com/api/boats/${boat._id}/unavailable-dates`); // Use boat._id instead of boatId
           if (!response.ok) {
             throw new Error('Error fetching unavailable dates');
           }
@@ -132,7 +132,7 @@ const BoatViewDetails = () => {
           };
           // Send the booking details to the backend to store in the booking table
           console.log('Sending booking data:', paymentDetails);
-          const bookingResponse = await fetch('http://localhost:8080/api/bookings/bookingss', {
+          const bookingResponse = await fetch('https://waterway-booking2-1.onrender.com/api/bookings/bookingss', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -190,7 +190,7 @@ const BoatViewDetails = () => {
   useEffect(() => {
     const fetchFoodData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/food/${boat._id}/food`);
+        const response = await axios.get(`https://waterway-booking2-1.onrender.com/api/food/${boat._id}/food`);
         console.log('Food Customization:', response.data);
         setFoodCustomization(response.data.meals); // Assuming response.data contains an object with arrays for breakfast, lunch, and dinner options
       } catch (error) {
@@ -303,7 +303,7 @@ const BoatViewDetails = () => {
           <div>
             <h2>{boat.boatName}</h2>
             <img
-              src={`http://localhost:8080/uploads/${boat.image}`}
+              src={`https://waterway-booking2-1.onrender.com/uploads/${boat.image}`}
               alt={boat.boatName}
               style={styles.boatImage}
             />
