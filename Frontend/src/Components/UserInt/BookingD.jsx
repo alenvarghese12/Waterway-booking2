@@ -16,7 +16,7 @@ const BookingD = () => {
                     throw new Error('User ID is not available');
                 }
                 console.log('Fetching bookings for User ID:', userId); // Log the user ID
-                const response = await fetch(`https://waterway-booking2-1.onrender.com/api/bookings/user/${userId}`);
+                const response = await fetch(`https://waterway-booking2.onrender.com/api/bookings/user/${userId}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to fetch booking details');
