@@ -42,7 +42,7 @@ const UserBoatList = () => {
   useEffect(() => {
     const fetchBoats = async () => {
       try {
-        const response = await axios.get('https://waterway-booking2.onrender.com/api/boats/boatsd');
+        const response = await axios.get('http://localhost:8080/api/boats/boatsd');
         setBoats(response.data);
       } catch (error) {
         console.error('Failed to fetch boats', error);
@@ -59,10 +59,10 @@ const UserBoatList = () => {
           <div key={boat._id} className="boat-card">
              <h3>{boat.boatName}</h3>
             <img
-              src={`https://waterway-booking2.onrender.com/uploads/${boat.image}`}
+              src={`http://localhost:8080/uploads/${boat.image}`}
               alt={boat.boatName}
               className="boat-image"
-              onClick={() => handleImageClick(`https://waterway-booking2.onrender.com/uploads/${boat.image}`)}
+              onClick={() => handleImageClick(`http://localhost:8080/uploads/${boat.image}`)}
             />
            
             <p><strong></strong>{boat.boatType}</p>

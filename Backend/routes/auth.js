@@ -1,4 +1,3 @@
-
 // module.exports = router;
 const router = require('express').Router();
 const express = require('express');
@@ -13,6 +12,8 @@ const jwt = require("jsonwebtoken");
 const authenticateToken = require('../middleware/authMiddleware'); 
 // const MongoStore = require('connect-mongo');
 // const session = require('express-session');
+const { predictFraud } = require('./utils/fraudDetection');
+const { getLocationFromIP, getFailedAttempts, logSuspiciousActivity, isAccountBlocked, recordFailedAttempt, resetFailedAttempts } = require('./utils/helperFunctions');
 
 
 
@@ -92,50 +93,124 @@ const noCache = (req, res, next) => {
 };
 
 
-router.post("/login", async (req, res) => {
+// router.post("/login", async (req, res) => {
+//     try {
+//         // Find the user by email
+//         const user = await User.findOne({ email: req.body.email });
+//         if (!user) return res.status(401).send({ message: "Invalid Email or Password" });
+
+//         // Check if the password is correct
+//         const validPassword = await bcrypt.compare(req.body.password, user.password);
+//         if (!validPassword) return res.status(401).send({ message: "Invalid Email or Password" });
+
+//         // Create a session for the user
+//         req.session.user = {
+//             id: user._id,
+//             role: user.role,
+//             name:user.name
+
+//         };
+
+//         // Generate JWT token for the user
+//         const token = user.generateAuthToken();
+//         console.log('Session:', req.session);
+
+//         // Decide the redirection URL based on the user's role
+//         let redirectUrl = '/';
+//         if (user.role === 'Admin') {
+//             redirectUrl = '/admin';
+//         } else if (user.role === 'BoatOwner') {
+//             redirectUrl = '/boatowner/boatlist';
+//         } else if (user.role === 'User') {
+//             redirectUrl = '/userint';
+//         }
+
+//         // Send the token and redirect URL to the client
+//         res.status(200).send({
+//             message: "Logged in successfully",
+//             token,  // Send JWT token
+//             redirectUrl  // Send redirect URL based on role
+//         });
+
+//     } catch (error) {
+//         res.status(500).send({ message: "Internal Server Error" });
+//     }
+// });
+
+router.post('/login', async (req, res) => {
     try {
-        // Find the user by email
+        // Check if account is blocked
+        const blockStatus = isAccountBlocked(req.body.email);
+        if (blockStatus.blocked) {
+            return res.status(429).send({ 
+                message: `Account temporarily blocked. Try again in ${blockStatus.remainingTime} seconds.` 
+            });
+        }
+
+        // Step 1: Collect login data for fraud detection
+        const currentHour = new Date().getHours();
+        const isNight = (currentHour < 6 || currentHour > 22) ? 1 : 0;
+
+        const loginData = {
+            ip_address: req.ip,
+            device_type: req.headers['user-agent'],
+            location: await getLocationFromIP(req.ip),
+            failed_attempts: await getFailedAttempts(req.body.email),
+            hour: currentHour,
+            is_night: isNight,
+            timestamp: new Date().toISOString(),
+        };
+
+        // Step 2: Perform fraud detection
+        const fraudPrediction = await predictFraud(loginData);
+
+        if (fraudPrediction.isFraud) {
+            // Record failed attempt and possibly block account
+            await recordFailedAttempt(req.body.email);
+            loginData.riskScore = fraudPrediction.riskScore;
+            logSuspiciousActivity(loginData);
+            return res.status(403).json({ 
+                message: 'Suspicious activity detected. Please try again later.' 
+            });
+        }
+
+        // Step 3: Authenticate user
         const user = await User.findOne({ email: req.body.email });
-        if (!user) return res.status(401).send({ message: "Invalid Email or Password" });
+        if (!user) {
+            await recordFailedAttempt(req.body.email);
+            return res.status(401).send({ message: "Invalid Email or Password" });
+        }
 
-        // Check if the password is correct
         const validPassword = await bcrypt.compare(req.body.password, user.password);
-        if (!validPassword) return res.status(401).send({ message: "Invalid Email or Password" });
+        if (!validPassword) {
+            await recordFailedAttempt(req.body.email);
+            return res.status(401).send({ message: "Invalid Email or Password" });
+        }
 
-        // Create a session for the user
+        // Reset failed attempts on successful login
+        resetFailedAttempts(req.body.email);
+
+        // Step 4: Create a session for the user
         req.session.user = {
             id: user._id,
             role: user.role,
-            name:user.name
-
+            name: user.name,
         };
 
-        // Generate JWT token for the user
+        // Step 5: Generate JWT token for the user
         const token = user.generateAuthToken();
-        console.log('Session:', req.session);
-
-        // Decide the redirection URL based on the user's role
-        let redirectUrl = '/';
-        if (user.role === 'Admin') {
-            redirectUrl = '/admin';
-        } else if (user.role === 'BoatOwner') {
-            redirectUrl = '/boatowner/boatlist';
-        } else if (user.role === 'User') {
-            redirectUrl = '/userint';
-        }
-
-        // Send the token and redirect URL to the client
+        
+        // Send response with token and redirect URL
         res.status(200).send({
             message: "Logged in successfully",
-            token,  // Send JWT token
-            redirectUrl  // Send redirect URL based on role
+            token,
+            redirectUrl: user.role === 'Admin' ? '/admin' : '/userint',
         });
-
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).send({ message: "Internal Server Error" });
     }
 });
-
 
 
 

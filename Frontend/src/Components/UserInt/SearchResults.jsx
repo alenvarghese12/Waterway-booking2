@@ -9,7 +9,7 @@ const SearchResults = () => {
   // Fetch boats when the component mounts and filter based on the query
   const fetchFilteredBoats = async () => {
     try {
-      const response = await axios.get("https://waterway-booking2.onrender.com/api/boats/boatsd"); // Fetch all boats
+      const response = await axios.get("http://localhost:8080/api/boats/boatsd"); // Fetch all boats
       const boats = response.data;
 
       // Filter boats based on the search query
@@ -47,7 +47,7 @@ const SearchResults = () => {
           filteredBoats.map((boat) => (
             <div key={boat._id} className="boat-card">
               <img
-                src={`https://waterway-booking2.onrender.com/uploads/${boat.image}`}
+                src={`http://localhost:8080/uploads/${boat.image}`}
                 alt={boat.boatName}
                 className="boat-image"
               />

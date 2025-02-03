@@ -24,7 +24,7 @@
 //     e.preventDefault();
 
 //     try {
-//         const url = "https://waterway-booking2.onrender.com/api/auth/login";
+//         const url = "http://localhost:8080/api/auth/login";
 //         console.log("Sending login request with:", formData); // Add logging
 //         const { data: res } = await axios.post(url, formData);
 //         console.log("Login response:", res); // Add logging
@@ -130,7 +130,7 @@ const Loginp = () => {
     e.preventDefault();
 
     try {
-        const url = "https://waterway-booking2.onrender.com/api/auth/login";
+        const url = "http://localhost:8080/api/auth/login";
         console.log("Sending login request with:", formData); // Add logging
         const { data: res } = await axios.post(url, formData);
         console.log("Login response:", res); // Add logging
@@ -238,8 +238,6 @@ useEffect(() => {
 
 export default Loginp;
 
-
-
 // import './LoginP.css';
 // import Background from '../Background/Background';
 // import { FaUser, FaLock } from "react-icons/fa";
@@ -261,7 +259,7 @@ export default Loginp;
 //     e.preventDefault();
 
 //     try {
-//       const url = "https://waterway-booking2.onrender.com/api/auth/login";
+//       const url = "http://localhost:8080/api/auth/login";
 //       const { data: res } = await axios.post(url, formData, { withCredentials: true });
 
 //       if (res.redirectUrl) {
@@ -284,7 +282,7 @@ export default Loginp;
 //   };
 
 //   const handleGoogleLogin = () => {
-//     window.location.href = "https://waterway-booking2.onrender.com/api/auth/google";
+//     window.location.href = "http://localhost:8080/api/auth/google";
 //   };
 
 //   return (
@@ -337,3 +335,5 @@ export default Loginp;
 // };
 
 // export default Loginp;
+
+
