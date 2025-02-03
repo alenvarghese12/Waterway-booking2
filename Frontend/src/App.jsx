@@ -7,7 +7,7 @@ import Register from './Components/Register/Register';
 import Admin from './Components/Admin/Admin';  // Use the AdminDashboard component
 import UserInt from './Components/UserInt/UserInt';
 import Boatowner from './Components/Boatowner/Boatowner';
-// import Logoutb from './Components/Logoutb/Logoutb';
+import Logoutb from './Components/Logoutb/Logoutb';
 import Addboat from './Components/Admin/Addboat';
 import Viewusers from './Components/Admin/Viewusers';
 import EditUser from './Components/Admin/EditUser';
